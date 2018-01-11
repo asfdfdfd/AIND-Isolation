@@ -2,6 +2,7 @@
 test your agent's strength against a set of known agents using tournament.py
 and include the results in your report.
 """
+import math
 import random
 
 
@@ -41,14 +42,13 @@ def custom_score(game, player):
     # Check if player already winner.
     if game.is_winner(player):
         return float("inf")
-                    
+               
     # Count legal moves of player and opponent.
-    moves_player_count = len(game.get_legal_moves(player))
+    moves_player_count = len(game.get_legal_moves(player))        
     moves_opponent_count = len(game.get_legal_moves(game.get_opponent(player)))
-                
-    # Return defference between moves to take remaining moves of opponent into account.
-    return float(moves_player_count - moves_opponent_count)
 
+    # Use weight for the player moves count and take values as square to increase difference between arguments.
+    return 1.31337 * moves_player_count * moves_player_count - moves_opponent_count * moves_opponent_count
 
 def custom_score_2(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -79,11 +79,20 @@ def custom_score_2(game, player):
     # Check if player already winner.
     if game.is_winner(player):
         return float("inf")
-                
+                                    
+    # Count legal moves of player and opponent.
     moves_player_count = len(game.get_legal_moves(player))
+    
+    if moves_player_count == 0:
+        return float("-inf")
+    
+    moves_opponent_count = len(game.get_legal_moves(game.get_opponent(player)))
+    
+    if moves_opponent_count == 0:
+        return float("inf")        
                 
-    # Return just player available moves.
-    return float(moves_player_count)
+    # Minimize this ratio.
+    return -float(moves_opponent_count / moves_player_count)
 
 
 def custom_score_3(game, player):
@@ -107,7 +116,7 @@ def custom_score_3(game, player):
     -------
     float
         The heuristic value of the current game state to the specified player.
-    """
+    """    
     # Check if player already loser.
     if game.is_loser(player):
         return float("-inf")
@@ -115,9 +124,20 @@ def custom_score_3(game, player):
     # Check if player already winner.
     if game.is_winner(player):
         return float("inf")
-               
-    # Return zero. This function is just for reference.
-    return float(0)
+                    
+    # Count legal moves of player and opponent.
+    moves_player_count = len(game.get_legal_moves(player))
+    
+    if moves_player_count == 0:
+        return float("-inf")
+    
+    moves_opponent_count = len(game.get_legal_moves(game.get_opponent(player)))
+    
+    if moves_opponent_count == 0:
+        return float("inf")        
+              
+    # Maximize this ratio.
+    return float(moves_player_count / moves_opponent_count)
 
 
 class IsolationPlayer:
